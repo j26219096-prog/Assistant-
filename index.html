@@ -13,6 +13,11 @@
             align-items: center;
             padding: 40px;
         }
+        {% if error %}
+    <div style="color: red; margin-top: 20px;">
+        <strong>Error:</strong> {{ error }}
+    </div>
+        {% endif %}
         h1 {
             color: #333;
         }
@@ -25,6 +30,7 @@
             flex-direction: column;
             width: 300px;
         }
+        
         input, button {
             margin: 10px 0;
             padding: 10px;
