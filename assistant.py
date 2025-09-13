@@ -5,30 +5,46 @@ import PyPDF2
 
 app = Flask(__name__)
 
-# Set your OpenAI API key from Render environment variable
+# Load OpenAI API key from Render secret
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     answer = ""
-    if request.method == "POST":
-        pdf_file = request.files["pdf"]
-        question = request.form.get("question")
+    error = ""
+    try:
+        if request.method == "POST":
+            pdf_file = request.files.get("pdf")
+            question = request.form.get("question")
 
-        # Read PDF text
-        reader = PyPDF2.PdfReader(pdf_file)
-        text = ""
-        for page in reader.pages:
-            text += page.extract_text()
+            if not pdf_file:
+                error = "No PDF uploaded!"
+            elif not question:
+                error = "Please enter a question!"
+            else:
+                # Read PDF text
+                reader = PyPDF2.PdfReader(pdf_file)
+                text = ""
+                for page in reader.pages:
+                    page_text = page.extract_text()
+                    if page_text:
+                        text += page_text
 
-        # Ask OpenAI
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role":"user", "content": f"Text: {text}\nQuestion: {question}"}]
-        )
-        answer = response.choices[0].message.content
+                if not text.strip():
+                    error = "PDF is empty or could not extract text."
+                else:
+                    # Ask OpenAI
+                    response = openai.ChatCompletion.create(
+                        model="gpt-3.5-turbo",
+                        messages=[{"role":"user", "content": f"Text: {text}\nQuestion: {question}"}]
+                    )
+                    answer = response.choices[0].message.content
 
-    return render_template("index.html", answer=answer)
+    except Exception as e:
+        error = f"An error occurred: {str(e)}"
+
+    return render_template("index.html", answer=answer, error=error)
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
