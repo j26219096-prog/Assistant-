@@ -1,6 +1,3 @@
-from flask import Flask, request, jsonify, render_template
-import openai
-import fitz  # PyMuPDF for PDF text extraction
 
 app = Flask(__name__)
 
