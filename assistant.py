@@ -1,8 +1,3 @@
-from dotenv import load_dotenv
-import os
-
-load_dotenv()  # load .env file
-openai.api_key = os.getenv("OPENAI_API_KEY")
 from flask import Flask, request, jsonify, render_template
 import openai
 import fitz  # PyMuPDF for PDF text extraction
