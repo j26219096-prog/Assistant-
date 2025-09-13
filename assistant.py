@@ -6,12 +6,14 @@ from flask import Flask
 
 app = Flask(__name__)
 
-# Your routes go here
+# Example route
+@app.route("/")
+def home():
+    return "Hello from Render!"
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Use Render's PORT or 5000 locally
+    port = int(os.environ.get("PORT", 5000))  # Render sets this automatically
     app.run(host="0.0.0.0", port=port)
-app = Flask(__name__)
 
 # Set your OpenAI API key
 openai.api_key = ""  # <-- Add your API key here
