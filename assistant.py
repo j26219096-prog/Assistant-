@@ -1,8 +1,11 @@
+import openai
+import fitz  # PyMuPDF
+from flask import Flask, render_template, request, jsonify
 
-
+app = Flask(__name__)
 
 # Set your OpenAI API key
-openai.api_key = ""
+openai.api_key = ""  # <-- Add your API key here
 
 # Home route
 @app.route("/")
@@ -23,15 +26,15 @@ def upload_pdf():
 @app.route("/ask", methods=["POST"])
 def ask_question():
     data = request.json
-    pdf_text = data["pdfText"]
-    question = data["question"]
+    pdf_text = data.get("pdfText", "")
+    question = data.get("question", "")
 
     prompt = f"""
-    You are an assistant. Use the following PDF text to answer the question:
-    PDF Content: {pdf_text}
-    Question: {question}
-    Answer clearly and concisely.
-    """
+You are an assistant. Use the following PDF text to answer the question:
+PDF Content: {pdf_text}
+Question: {question}
+Answer clearly and concisely.
+"""
 
     response = openai.ChatCompletion.create(
         model="gpt-4o-mini",
