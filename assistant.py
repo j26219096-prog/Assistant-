@@ -1,5 +1,5 @@
 
-app = Flask(__name__)
+
 
 # Set your OpenAI API key
 openai.api_key = ""
